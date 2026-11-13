@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f8f6ff">
+<title>Movers Tense Practice</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #241c46;
+  --muted: #554d6d;
+  --purple: #5530ad;
+  --line: #e7dff5;
+  --paper: #f8f6ff;
+  --green: #155a3e;
+  --pink: #872544;
+  font-family: "Nunito", "Trebuchet MS", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background: radial-gradient(ellipse at 4% 0%, #ede2ff, transparent 55%),
+              radial-gradient(ellipse at 100% 100%, #ddf8f0, transparent 55%), var(--paper);
+}
+main {
+  width: min(100%, 690px);
+  margin: auto;
+  padding: clamp(12px, 4vw, 30px) clamp(12px, 4vw, 24px) max(24px, env(safe-area-inset-bottom));
+}
+.banner {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(17px, 4vw, 31px);
+  border-radius: 24px;
+  background: #e4d3ff;
+}
+.banner::before, .banner::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.banner::before { width: 190px; height: 190px; background: #fbe2f2; top: -93px; right: -44px; }
+.banner::after { width: 85px; height: 85px; background: #ffe9aa; bottom: -50px; right: 39px; }
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: #513580;
+}
+h1 { margin: 0; font-size: clamp(1.85rem, 6vw, 3.15rem); line-height: 1.03; letter-spacing: -.055em; }
+.tense-list, .steps { display: grid; padding: 0; list-style: none; }
+.tense-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0 0;
+  font-size: .75rem;
+  font-weight: 800;
+}
+.tense-list li { border-radius: 999px; padding: 5px 9px; background: #fff3c8; }
+.tense-list li:nth-child(2) { background: #daf8ee; }
+.tense-list li:nth-child(3) { background: #ffdfec; }
+.steps {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 13px 0;
+}
+.steps li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  color: var(--muted);
+  background: #ffffffa8;
+  font-weight: 800;
+  font-size: clamp(.77rem, 3.6vw, .95rem);
+}
+.steps span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: #eee8f9;
+}
+.steps li[aria-current="step"] { color: #442080; background: #f0e6ff; border-color: #c9afea; }
+.steps li[aria-current="step"] span { color: white; background: var(--purple); }
+.steps li.done { color: var(--green); background: #e4f7ed; border-color: #c3e8d6; }
+.steps li.done span { background: #c3e8d6; }
+.card {
+  padding: clamp(15px, 4vw, 29px);
+  border-radius: 24px;
+  border: 1px solid #ece4f6;
+  background: #fff;
+  box-shadow: 0 12px 34px #40227712;
+}
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+h2 { margin: 0; font-size: clamp(1rem, 4vw, 1.25rem); line-height: 1.25; }
+.count { margin: 0; font-size: .78rem; color: var(--muted); font-weight: 800; flex-shrink: 0; }
+progress { width: 100%; height: 8px; margin: 10px 0 13px; display: block; accent-color: var(--purple); }
+progress::-webkit-progress-bar { background: #efe9f7; border-radius: 8px; }
+progress::-webkit-progress-value { background: #8c5de2; border-radius: 8px; }
+progress::-moz-progress-bar { background: #8c5de2; border-radius: 8px; }
+.prompt {
+  margin: 0 0 12px;
+  border-radius: 17px;
+  padding: clamp(13px, 3.5vw, 22px);
+  background: #f2eaff;
+}
+.writing .prompt { background: #def7ef; }
+.sentence { margin: 0; font-size: clamp(1.25rem, 4.9vw, 1.8rem); font-weight: 900; line-height: 1.42; }
+.gap { display: inline-block; min-width: 2.25em; border-bottom: 3px solid #8654cd; line-height: 1.02; }
+.gap.filled { color: var(--green); border-bottom-color: #28815b; }
+mark { background: #ffea9a; color: inherit; border-radius: .2em; }
+label { display: block; margin-bottom: 7px; font-weight: 800; }
+.verb { padding: 2px 6px; border-radius: 6px; background: #def7ef; }
+.options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+button, input { font: inherit; }
+button {
+  min-height: 46px;
+  cursor: pointer;
+  touch-action: manipulation;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  padding: 9px 12px;
+  color: var(--ink);
+  font-weight: 800;
+}
+button:focus-visible, input:focus-visible { outline: 3px solid #7250c6; outline-offset: 3px; }
+button:disabled { cursor: default; }
+.option { min-width: 0; font-size: 1rem; background: #f4edff; border-color: #e3d6f5; overflow-wrap: anywhere; }
+.option:nth-child(2) { background: #fff3d1; border-color: #f1e1af; }
+.option:nth-child(3) { background: #e1f8f0; border-color: #c3e9dc; }
+.option[disabled]:not(.right, .wrong) { opacity: .62; }
+.right, .option.right { color: var(--green); background: #d9f5e5; border-color: #60a684; }
+.wrong, .option.wrong { color: var(--pink); background: #ffebf0; border-color: #db91a7; }
+input {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 13px;
+  font-size: 1rem;
+  border-radius: 13px;
+  border: 1px solid #bcb0d2;
+  background: #fff;
+  color: var(--ink);
+}
+.feedback { margin: 0; font-size: .94rem; line-height: 1.45; }
+.feedback p { margin: 10px 0 0; padding: 9px 11px; border-radius: 10px; background: #fff0ce; color: #594017; }
+.feedback p.success { background: #e0f7e9; color: var(--green); }
+.actions { display: grid; margin-top: 12px; }
+.primary { color: #fff; background: var(--purple); }
+.primary:active { background: #442389; }
+.primary:disabled { color: #655b76; background: #f1edf7; }
+.finish { text-align: center; }
+.finish h2 { font-size: clamp(1.7rem, 7vw, 2.65rem); }
+.finish p { color: var(--muted); }
+.scores { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 16px 0; }
+.score { padding: 12px 7px; border-radius: 14px; background: #f1e6ff; font-weight: 800; }
+.score:nth-child(2) { background: #dff8ee; }
+.score strong { display: block; font-size: 1.4rem; }
+@media (max-width: 370px) { .option { padding-inline: 4px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .card { animation: appear .22s ease-out; }
+  @keyframes appear { from { opacity: .6; transform: translateY(4px); } }
+}
+</style>
+</head>
+<body>
+<main>
+  <header class="banner">
+    <p class="eyebrow">Movers English</p>
+    <h1>Tense Practice</h1>
+    <ul class="tense-list" aria-label="Tenses in this activity">
+      <li>Present simple</li><li>Present continuous</li><li>Past simple</li>
+    </ul>
+  </header>
+
+  <ol class="steps" aria-label="Tasks">
+    <li id="chooseStep" aria-current="step"><span aria-hidden="true">1</span>Choose the verb</li>
+    <li id="writeStep"><span aria-hidden="true">2</span>Write the verb</li>
+  </ol>
+
+  <section id="activity" class="card" aria-labelledby="taskTitle">
+    <div class="card-head">
+      <h2 id="taskTitle" tabindex="-1">Choose the correct verb.</h2>
+      <p class="count" id="count"></p>
+    </div>
+    <progress id="progress" aria-label="Sentences completed in this task"></progress>
+    <div class="prompt"><p class="sentence" id="sentence"></p></div>
+    <div class="options" id="options"></div>
+    <form id="writing" novalidate hidden>
+      <label for="answer">Use this verb <span class="verb" id="verb"></span></label>
+      <input id="answer" type="text" placeholder="Type the missing words" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-describedby="sentence feedback" maxlength="60">
+    </form>
+    <div id="feedback" class="feedback" role="status" aria-atomic="true"></div>
+    <div class="actions">
+      <button id="check" class="primary" form="writing" type="submit" hidden>Check answer</button>
+      <button id="next" class="primary" type="button" disabled>Next sentence</button>
+    </div>
+  </section>
+
+  <section id="finish" class="card finish" aria-labelledby="finishTitle" hidden>
+    <h2 id="finishTitle" tabindex="-1">You did it!</h2>
+    <p id="summary"></p>
+    <div class="scores" aria-label="First-try scores">
+      <div class="score">Choose <strong id="chooseScore"></strong></div>
+      <div class="score">Write <strong id="writeScore"></strong></div>
+    </div>
+    <p>Correct on your first try</p>
+    <div class="actions"><button id="restart" class="primary" type="button">Play again</button></div>
+  </section>
+</main>
+
+<script>
+"use strict";
+
+const chooseItems = [
+  { sentence: "Every morning, Jack ___ his teeth.", answer: "brushes", alternatives: ["is brushing", "brushed"] },
+  { sentence: "My friends usually ___ football after school.", answer: "play", alternatives: ["are playing", "played"] },
+  { sentence: "Mia ___ her grandma every Sunday.", answer: "visits", alternatives: ["is visiting", "visited"] },
+  { sentence: "Look! The dog ___ in the lake now.", answer: "is swimming", alternatives: ["swims", "swam"] },
+  { sentence: "Listen! The children ___ a song right now.", answer: "are singing", alternatives: ["sing", "sang"] },
+  { sentence: "I can’t talk now. I ___ my lunch.", answer: "am eating", alternatives: ["eat", "ate"] },
+  { sentence: "Yesterday, we ___ to the zoo.", answer: "went", alternatives: ["go", "are going"] },
+  { sentence: "Last Saturday, Lily ___ a picture of a tiger.", answer: "drew", alternatives: ["draws", "is drawing"] },
+  { sentence: "Yesterday afternoon, Ben ___ his room.", answer: "cleaned", alternatives: ["cleans", "is cleaning"] }
+];
+
+const writeItems = [
+  { sentence: "Anna ___ to school every day.", verb: "walk", answer: "walks", clue: "every day",
+    rule: "This happens again and again. With Anna (she), add -s to the verb.", start: "walk…" },
+  { sentence: "On Saturdays, I always ___ my bike to the park.", verb: "ride", answer: "ride", clue: "always",
+    rule: "This is something you do again and again. After I, use the verb as it is.", start: "r…" },
+  { sentence: "Tom ___ TV after dinner every evening.", verb: "watch", answer: "watches", clue: "every evening",
+    rule: "This happens again and again. With Tom (he), add -es to watch.", start: "watche…" },
+  { sentence: "Look! Dad ___ dinner right now.", verb: "cook", answer: "is cooking", clue: "right now",
+    rule: "It’s happening now. Use is with Dad (he), then add -ing to cook.", start: "is cook…" },
+  { sentence: "Listen! The girls ___ in the classroom right now.", verb: "talk", answer: "are talking", clue: "right now",
+    rule: "It’s happening now. Use are with the girls (they), then add -ing to talk.", start: "are talk…" },
+  { sentence: "I can’t play right now. I ___ my homework.", verb: "do", answer: "am doing", clue: "right now",
+    rule: "It’s happening now. Use am with I, then add -ing to do.", start: "am do…" },
+  { sentence: "Yesterday, Max ___ his mum in the kitchen.", verb: "help", answer: "helped", clue: "Yesterday",
+    rule: "It happened in the past. Add -ed to help.", start: "help…" },
+  { sentence: "Last night, we ___ a funny film.", verb: "see", answer: "saw", clue: "Last night",
+    rule: "It happened in the past. The verb see changes its spelling in the past.", start: "sa…" },
+  { sentence: "Last Sunday, I ___ a banana for breakfast.", verb: "eat", answer: "ate", clue: "Last Sunday",
+    rule: "It happened in the past. The verb eat changes its spelling in the past.", start: "at…" }
+];
+
+const rounds = [chooseItems, writeItems];
+const get = id => document.getElementById(id);
+const [activity, taskTitle, count, progress, sentence, options, writing, verb, answer, feedback, check, next, finish] =
+  ["activity", "taskTitle", "count", "progress", "sentence", "options", "writing", "verb", "answer", "feedback", "check", "next", "finish"].map(get);
+const steps = [get("chooseStep"), get("writeStep")];
+let round, index, mistakes, solved, scores, order;
+
+function shuffle(items) {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function updateSteps(completed) {
+  steps.forEach((step, i) => {
+    step.classList.toggle("done", completed || i < round);
+    if (!completed && i === round) step.setAttribute("aria-current", "step");
+    else step.removeAttribute("aria-current");
+  });
+}
+
+function drawSentence(item, completed = false, highlight = false) {
+  sentence.replaceChildren();
+  const [before, after] = item.sentence.split("___");
+  const gap = document.createElement("span");
+  gap.className = completed ? "gap filled" : "gap";
+  gap.textContent = completed ? item.answer : "\u00a0";
+  if (!completed) gap.setAttribute("aria-label", "blank");
+
+  for (const part of [before, gap, after]) {
+    if (typeof part === "string" && highlight && part.includes(item.clue)) {
+      const position = part.indexOf(item.clue);
+      const mark = document.createElement("mark");
+      mark.textContent = item.clue;
+      sentence.append(part.slice(0, position), mark, part.slice(position + item.clue.length));
+    } else {
+      sentence.append(part);
+    }
+  }
+}
+
+function showFeedback(message, success = false) {
+  const note = document.createElement("p");
+  note.textContent = message;
+  if (success) note.className = "success";
+  feedback.replaceChildren(note);
+}
+
+function renderQuestion(moveFocus = true) {
+  const item = order[index];
+  const isWriting = round === 1;
+  mistakes = 0;
+  solved = false;
+  updateSteps(false);
+  activity.classList.toggle("writing", isWriting);
+  taskTitle.textContent = isWriting ? "Complete the sentence." : "Choose the correct verb.";
+  count.textContent = `Sentence ${index + 1} of ${order.length}`;
+  progress.max = order.length;
+  progress.value = index;
+  feedback.replaceChildren();
+  drawSentence(item);
+  options.replaceChildren();
+  options.hidden = isWriting;
+  writing.hidden = !isWriting;
+  check.hidden = !isWriting;
+  next.hidden = isWriting;
+  next.disabled = true;
+  next.textContent = index < order.length - 1 ? "Next sentence" : ["Start writing", "See my results"][round];
+
+  if (isWriting) {
+    verb.textContent = item.verb;
+    answer.value = "";
+    answer.readOnly = false;
+    answer.className = "";
+    answer.removeAttribute("aria-invalid");
+  } else {
+    for (const choice of shuffle([item.answer, ...item.alternatives])) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "option";
+      button.textContent = choice;
+      button.addEventListener("click", () => selectChoice(item, choice, button));
+      options.append(button);
+    }
+  }
+  if (moveFocus) taskTitle.focus();
+}
+
+function completeItem(item) {
+  solved = true;
+  if (mistakes === 0) scores[round]++;
+  progress.value = index + 1;
+  drawSentence(item, true);
+  showFeedback("Correct! Well done.", true);
+  check.hidden = true;
+  next.hidden = false;
+  next.disabled = false;
+  next.focus();
+}
+
+function selectChoice(item, choice, button) {
+  if (solved) return;
+  if (choice === item.answer) {
+    button.classList.add("right");
+    for (const option of options.children) option.disabled = true;
+    completeItem(item);
+  } else {
+    mistakes++;
+    button.classList.add("wrong");
+    button.disabled = true;
+    showFeedback("Try again. Read the whole sentence.");
+    options.querySelector("button:enabled")?.focus();
+  }
+}
+
+function normalise(value) {
+  return value.trim().toLowerCase().replace(/\s+/g, " ").replace(/[.!?]$/, "").trim();
+}
+
+writing.addEventListener("submit", event => {
+  event.preventDefault();
+  if (round !== 1 || solved) return;
+  const item = order[index];
+  const attempt = normalise(answer.value);
+  if (!attempt) {
+    if (mistakes === 0) showFeedback("Type the missing word or words first.");
+    answer.focus();
+    return;
+  }
+  if (attempt === item.answer) {
+    answer.value = item.answer;
+    answer.readOnly = true;
+    answer.className = "right";
+    answer.removeAttribute("aria-invalid");
+    completeItem(item);
+    return;
+  }
+  mistakes++;
+  answer.className = "wrong";
+  answer.setAttribute("aria-invalid", "true");
+  drawSentence(item, false, true);
+  const hints = [
+    `Look at “${item.clue}”. Does it happen again and again, now, or in the past?`,
+    item.rule,
+    `Start with “${item.start}”. Type the whole answer in the box.`,
+    `Try typing “${item.answer}” to complete the sentence.`
+  ];
+  showFeedback(hints[Math.min(mistakes, hints.length) - 1]);
+  answer.focus();
+  answer.select();
+});
+
+answer.addEventListener("input", () => {
+  answer.classList.remove("wrong");
+  answer.removeAttribute("aria-invalid");
+});
+
+next.addEventListener("click", () => {
+  if (!solved) return;
+  if (index + 1 < order.length) {
+    index++;
+    renderQuestion();
+  } else if (round === 0) {
+    round = 1;
+    index = 0;
+    order = shuffle(rounds[round]);
+    renderQuestion();
+  } else {
+    activity.hidden = true;
+    finish.hidden = false;
+    updateSteps(true);
+    get("summary").textContent = `You completed all ${chooseItems.length + writeItems.length} sentences.`;
+    get("chooseScore").textContent = `${scores[0]} / ${chooseItems.length}`;
+    get("writeScore").textContent = `${scores[1]} / ${writeItems.length}`;
+    get("finishTitle").focus();
+  }
+});
+
+function start(moveFocus) {
+  round = 0;
+  index = 0;
+  scores = [0, 0];
+  order = shuffle(rounds[round]);
+  finish.hidden = true;
+  activity.hidden = false;
+  renderQuestion(moveFocus);
+}
+
+get("restart").addEventListener("click", () => start(true));
+start(false);
+</script>
+</body>
+</html>
